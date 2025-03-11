@@ -1,7 +1,6 @@
 {
     "name": "reelflow/reelflow-php",
     "description": "Elegant and powerful Instagram video downloader for seamless content extraction",
-    "version": "1.1.0",
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/code3-dev/reelflow-php",
