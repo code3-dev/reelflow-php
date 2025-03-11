@@ -115,8 +115,19 @@ class ReelFlow
             $width = $crawler->filter('meta[property="og:video:width"]')->attr('content') ?? '';
             $height = $crawler->filter('meta[property="og:video:height"]')->attr('content') ?? '';
             
+            if (empty($width) || empty($height)) {
+                throw new InstagramException('Failed to extract video dimensions', 500);
+            }
+            
             return new VideoInfo($videoUrl, $width, $height);
+        } catch (\GuzzleHttp\Exception\ServerException $e) {
+            throw new InstagramException('Instagram server error: ' . $e->getMessage(), 500);
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            throw new InstagramException('Failed to connect to Instagram server: ' . $e->getMessage(), 500);
         } catch (\Exception $e) {
+            if ($e instanceof InstagramException) {
+                throw $e;
+            }
             return null;
         }
     }
@@ -130,6 +141,10 @@ class ReelFlow
             ]);
 
             $data = json_decode($response->getBody()->getContents(), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InstagramException('Failed to parse server response', 500);
+            }
+
             $mediaData = $data['data']['xdt_shortcode_media'] ?? null;
 
             if (!$mediaData) {
@@ -140,12 +155,23 @@ class ReelFlow
                 throw new InstagramException('This post is not a video', 400);
             }
 
+            if (!isset($mediaData['video_url']) || !isset($mediaData['dimensions'])) {
+                throw new InstagramException('Invalid video data received from server', 500);
+            }
+
             return new VideoInfo(
                 $mediaData['video_url'],
                 $mediaData['dimensions']['width'] ?? 0,
                 $mediaData['dimensions']['height'] ?? 0
             );
+        } catch (\GuzzleHttp\Exception\ServerException $e) {
+            throw new InstagramException('Instagram server error: ' . $e->getMessage(), 500);
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            throw new InstagramException('Failed to connect to Instagram server: ' . $e->getMessage(), 500);
         } catch (\Exception $e) {
+            if ($e instanceof InstagramException) {
+                throw $e;
+            }
             return null;
         }
     }

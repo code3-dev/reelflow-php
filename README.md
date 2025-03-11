@@ -20,7 +20,7 @@ A modern, elegant PHP library for downloading Instagram reels with ease.
 Install via Composer:
 
 ```bash
-composer require reelflow/reelflow
+composer require reelflow/reelflow-php
 ```
 
 ## 🚀 Quick Start
@@ -77,6 +77,17 @@ Retrieves video information from an Instagram reel URL.
 - `getHeight(): string` - Get video height
 - `toArray(): array` - Get all info as array
 
+#### Example using toArray():
+```php
+$video = $downloader->getVideoInfo($url);
+$videoData = $video->toArray();
+
+// Access data from array
+echo $videoData['video_url'];  // Direct video URL
+echo $videoData['width'];      // Video width
+echo $videoData['height'];     // Video height
+```
+
 ### InstagramException Class
 
 Extends PHP's built-in Exception class with additional status code information.
@@ -120,6 +131,20 @@ try {
             break;
         case 404:
             echo "Reel not found";
+            break;
+        case 500:
+            // Handle various 500 error cases
+            if (strpos($e->getMessage(), 'Failed to parse server response') !== false) {
+                echo "Error: Instagram API response was malformed";
+            } elseif (strpos($e->getMessage(), 'Failed to connect to Instagram server') !== false) {
+                echo "Error: Could not establish connection with Instagram";
+            } elseif (strpos($e->getMessage(), 'Instagram server error') !== false) {
+                echo "Error: Instagram server is experiencing issues";
+            } elseif (strpos($e->getMessage(), 'Failed to extract video dimensions') !== false) {
+                echo "Error: Could not retrieve video dimensions";
+            } else {
+                echo "Internal server error: " . $e->getMessage();
+            }
             break;
         default:
             echo "Error: " . $e->getMessage();
