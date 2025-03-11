@@ -1,0 +1,34 @@
+{
+    "name": "reelflow/reelflow-php",
+    "description": "Elegant and powerful Instagram video downloader for seamless content extraction",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/code3-dev/reelflow-php",
+    "authors": [
+        {
+            "name": "Hossein Pira",
+            "email": "h3dev.pira@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/dom-crawler": "^5.0|^6.0",
+        "symfony/css-selector": "^5.0|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Code3\\ReelFlow\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/code3-dev/reelflow-php.git"
+        }
+    ]
+} 
