@@ -131,16 +131,10 @@ try {
 
 ### Requirements
 
-- PHP 8.0 or higher
+- PHP 7.4 or higher
 - Composer
 - GuzzleHttp Client
 - Symfony DomCrawler
-
-### Running Tests
-
-```bash
-composer test
-```
 
 ## 📞 Support
 
