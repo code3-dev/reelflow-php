@@ -12,7 +12,6 @@ A modern, elegant PHP library for downloading Instagram reels with ease.
 - 🚀 Simple and intuitive API
 - 🔄 Automatic fallback mechanisms
 - 🛡️ Comprehensive error handling
-- 📱 Mobile-friendly user agent support
 - 🔍 Smart reel URL validation
 
 ## 📦 Installation
@@ -83,7 +82,7 @@ $video = $downloader->getVideoInfo($url);
 $videoData = $video->toArray();
 
 // Access data from array
-echo $videoData['video_url'];  // Direct video URL
+echo $videoData['videoUrl'];  // Direct video URL
 echo $videoData['width'];      // Video width
 echo $videoData['height'];     // Video height
 ```
