@@ -5,37 +5,67 @@ namespace Code3\ReelFlow;
 class VideoInfo
 {
     private string $videoUrl;
-    private string $width;
-    private string $height;
+    private int $width;
+    private int $height;
+    private ?string $description;
+    private ?string $username;
+    private ?string $thumbnailUrl;
 
-    public function __construct(string $videoUrl, string $width, string $height)
-    {
+    public function __construct(
+        string $videoUrl,
+        int $width,
+        int $height,
+        ?string $description = null,
+        ?string $username = null,
+        ?string $thumbnailUrl = null
+    ) {
         $this->videoUrl = $videoUrl;
         $this->width = $width;
         $this->height = $height;
+        $this->description = $description;
+        $this->username = $username;
+        $this->thumbnailUrl = $thumbnailUrl;
     }
 
-    public function getVideoUrl(): string
+    public function getUrl(): string
     {
         return $this->videoUrl;
     }
 
-    public function getWidth(): string
+    public function getWidth(): int
     {
         return $this->width;
     }
 
-    public function getHeight(): string
+    public function getHeight(): int
     {
         return $this->height;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function getThumbnailUrl(): ?string
+    {
+        return $this->thumbnailUrl;
     }
 
     public function toArray(): array
     {
         return [
-            'videoUrl' => $this->videoUrl,
+            'url' => $this->videoUrl,
             'width' => $this->width,
-            'height' => $this->height
+            'height' => $this->height,
+            'description' => $this->description ?? '',
+            'username' => $this->username ?? '',
+            'thumbnail_url' => $this->thumbnailUrl ?? ''
         ];
     }
 } 

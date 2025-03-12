@@ -9,6 +9,7 @@ A modern, elegant PHP library for downloading Instagram reels with ease.
 ## ✨ Features
 
 - 🎯 Download videos from Instagram reels
+- 🖼️ Get reel thumbnails
 - 🚀 Simple and intuitive API
 - 🔄 Automatic fallback mechanisms
 - 🛡️ Comprehensive error handling
@@ -38,11 +39,14 @@ try {
     $video = $downloader->getVideoInfo('https://www.instagram.com/reel/xyz123/');
     
     // Access reel details
-    echo "Video URL: " . $video->getVideoUrl() . "\n";
-    echo "Width: " . $video->getWidth() . "\n";
-    echo "Height: " . $video->getHeight() . "\n";
+    echo $video->getVideoUrl();      // Direct video URL
+    echo $video->getThumbnailUrl();  // Thumbnail URL
+    echo $video->getWidth();         // Video width
+    echo $video->getHeight();        // Video height
+    echo $video->getUsername();      // Creator's username
+    echo $video->getDescription();   // Reel description
 } catch (InstagramException $e) {
-    echo "Error {$e->getStatusCode()}: {$e->getMessage()}\n";
+    echo "Error {$e->getStatusCode()}: {$e->getMessage()}";
 }
 ```
 
@@ -72,8 +76,11 @@ Retrieves video information from an Instagram reel URL.
 
 #### Methods:
 - `getVideoUrl(): string` - Get the direct video URL
-- `getWidth(): string` - Get video width
-- `getHeight(): string` - Get video height
+- `getThumbnailUrl(): string` - Get thumbnail image URL
+- `getWidth(): int` - Get video width
+- `getHeight(): int` - Get video height
+- `getUsername(): string` - Get the username of the reel creator
+- `getDescription(): string` - Get the reel description
 - `toArray(): array` - Get all info as array
 
 #### Example using toArray():
@@ -82,9 +89,12 @@ $video = $downloader->getVideoInfo($url);
 $videoData = $video->toArray();
 
 // Access data from array
-echo $videoData['videoUrl'];  // Direct video URL
-echo $videoData['width'];      // Video width
-echo $videoData['height'];     // Video height
+echo $videoData['videoUrl'];     // Direct video URL
+echo $videoData['thumbnailUrl']; // Thumbnail URL
+echo $videoData['width'];        // Video width
+echo $videoData['height'];       // Video height
+echo $videoData['username'];     // Creator's username
+echo $videoData['description'];  // Reel description
 ```
 
 ### InstagramException Class

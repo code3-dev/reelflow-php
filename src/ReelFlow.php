@@ -54,7 +54,7 @@ class ReelFlow
      * Get video information from an Instagram URL
      * 
      * @param string $url Instagram video/reel URL
-     * @return VideoInfo Video information including direct URL and dimensions
+     * @return VideoInfo Video information including direct URL, dimensions, description and username
      * @throws InstagramException
      */
     public function getVideoInfo(string $url): VideoInfo
@@ -101,7 +101,6 @@ class ReelFlow
             
             $crawler = new Crawler($html);
             
-            // Match TypeScript implementation using meta tags
             $videoElement = $crawler->filter('meta[property="og:video"]');
             if ($videoElement->count() === 0) {
                 return null;
@@ -115,11 +114,32 @@ class ReelFlow
             $width = $crawler->filter('meta[property="og:video:width"]')->attr('content') ?? '';
             $height = $crawler->filter('meta[property="og:video:height"]')->attr('content') ?? '';
             
+            // Get thumbnail URL
+            $thumbnailUrl = $crawler->filter('meta[property="og:image"]')->attr('content') ?? '';
+            
+            // Get description and username
+            $description = $crawler->filter('meta[property="og:description"]')->attr('content') ?? '';
+            $username = '';
+            
+            // Try to extract username from description
+            if (preg_match('/^([^:]+)/', $description, $matches)) {
+                $username = trim($matches[1]);
+                // Remove username from description
+                $description = trim(preg_replace('/^[^:]+:\s*/', '', $description));
+            }
+            
             if (empty($width) || empty($height)) {
                 throw new InstagramException('Failed to extract video dimensions', 500);
             }
             
-            return new VideoInfo($videoUrl, $width, $height);
+            return new VideoInfo(
+                $videoUrl,
+                (int)$width,
+                (int)$height,
+                $description,
+                $username,
+                $thumbnailUrl
+            );
         } catch (\GuzzleHttp\Exception\ServerException $e) {
             throw new InstagramException('Instagram server error: ' . $e->getMessage(), 500);
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
@@ -159,10 +179,19 @@ class ReelFlow
                 throw new InstagramException('Invalid video data received from server', 500);
             }
 
+            $description = $mediaData['edge_media_to_caption']['edges'][0]['node']['text'] ?? '';
+            $username = $mediaData['owner']['username'] ?? '';
+            
+            // Get thumbnail URL from GraphQL response
+            $thumbnailUrl = $mediaData['display_url'] ?? '';
+
             return new VideoInfo(
                 $mediaData['video_url'],
                 $mediaData['dimensions']['width'] ?? 0,
-                $mediaData['dimensions']['height'] ?? 0
+                $mediaData['dimensions']['height'] ?? 0,
+                $description,
+                $username,
+                $thumbnailUrl
             );
         } catch (\GuzzleHttp\Exception\ServerException $e) {
             throw new InstagramException('Instagram server error: ' . $e->getMessage(), 500);
